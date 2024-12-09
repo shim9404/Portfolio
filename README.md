@@ -9,7 +9,7 @@
 
 #### - 클래스 구조
 
-![StatusEffect](https://github.com/user-attachments/assets/6bb814a3-ce0f-41de-9742-42ea486fbcb6)
+![StatusEffect](_ReadmeImages/StatusEffect_diagram.png)
 
 
 #### - 작업 시 고려 사항
@@ -22,14 +22,14 @@
 
 
 #### - 사용 예시
-![StatusEffect](https://github.com/user-attachments/assets/02525c6b-8149-4bca-a8eb-bee852245c74)
+![StatusEffect](_ReadmeImages/StatusEffect.gif)
 
 
 ## 2. MarketSDK
 
 #### - 클래스 구조
 
-![MarketSDK](https://github.com/user-attachments/assets/a0ac1dfe-f871-472c-8543-de138523d8ce)
+![MarketSDK](_ReadmeImages/MarketSDK_diagram.png)
 
 #### - 작업 시 고려 사항
 
