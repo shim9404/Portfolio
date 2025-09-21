@@ -25,7 +25,7 @@ namespace MarketSDK
         /// <summary>
         /// 빠른 로그인
         /// </summary>
-        [Obsoletee("GPGS V2 대응으로 구글 환경에서는 false 반환 됨")]
+        [Obsolete("GPGS V2 대응으로 구글 환경에서는 false 반환 됨")]
         void QuickLogin(Action<bool> _callback, string _id = "");
 
 
