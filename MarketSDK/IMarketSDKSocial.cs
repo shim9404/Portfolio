@@ -9,6 +9,7 @@ namespace MarketSDK
         /// </summary>
         /// <param name="_id">화면에 띄울 리더보드 id 생략 시 리더보드 목록을 화면에 띄움</param>
         /// <param name="_callback">리더 보드 호출 후 실행될 함수</param>
+        [Obsolete("Social api 미지원으로 애플 환경에서는 false 반환 됨. 수정 예정")]
         void ShowLeaderboard(string _id = "", Action<bool> _callback = null);
 
         /// <summary>
@@ -17,6 +18,7 @@ namespace MarketSDK
         /// <param name="_value">업로드할 점수</param>
         /// <param name="_id">업로드할 랭킹의 id 값</param>
         /// <param name="_callback">점수 업로드 호출 후 실행될 함수</param>
+        [Obsolete("Social api 미지원으로 애플 환경에서는 false 반환 됨. 수정 예정")]
         void ReportScore(int _value, string _id, Action<bool> _callback = null);
 
     }

@@ -8,14 +8,23 @@ namespace MarketSDK
         /// <summary>
         /// 애플 게임 센터 로그인
         /// </summary>
+        [Obsolete("Social api 미지원으로 수정 예정")]
         private void GameCenterLogin(Action<bool> _callback = null)
         {
+            _callback?.Invoke(false);
+            return;
+
+            // TODO : Social api 미지원으로 수정 필요
             Social.localUser.Authenticate(result => _callback?.Invoke(result));
         }
 
-
+        [Obsolete("Social api 미지원으로 수정 예정")]
         public void ReportScore(int _value, string _id, Action<bool> _callback = null)
         {
+            _callback?.Invoke(false);
+            return;
+         
+            // TODO : Social api 미지원으로 수정 필요
             Action<bool> loginCallback = (isSuccess =>
             {
                 if (isSuccess) _callback?.Invoke(true);
@@ -37,8 +46,13 @@ namespace MarketSDK
             }
         }
 
+        [Obsolete("Social api 미지원으로 수정 예정")]
         public void ShowLeaderboard(string _id = null, Action<bool> _callback = null)
         {
+            _callback?.Invoke(false);
+            return;
+            
+            // TODO : Social api 미지원으로 수정 필요
             Action loginCallback = () =>
             {
                 Social.ShowLeaderboardUI();
