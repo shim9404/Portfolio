@@ -2,11 +2,10 @@
 using System;
 using MarketSDK;
 
-
-    /// <summary>
-    /// <para> Market SDK를 생성 및 기능을 호출할 때 사용 </para>
-    /// </summary>
-    public class MarketSDKManager : MonoBehaviour
+/// <summary>
+/// <para> Market SDK를 생성 및 기능을 호출할 때 사용 </para>
+/// </summary>
+public class MarketSDKManager : MonoBehaviour
     {
         private bool isInit = false;
         MarketType loggedInType;
@@ -39,13 +38,24 @@ using MarketSDK;
             if (login == null) login = MarketSDKFactory.GetLoginInstance(_type);
             if (social == null) social = MarketSDKFactory.GetSocialInstance(_type);
 
+            social.Init();
+
             login.Init(result =>
             {
                 if (result)
                 {
+                    
                     isInit = true;
+                    login.Login((bool result, string msg) => 
+                    {
+                        if (result) LoginSuccess(MarketSDK.MarketType.GPGS);
+                        _callback?.Invoke(result);
+                    });
                 }
-                _callback?.Invoke(result);
+                else
+                {
+                    _callback?.Invoke(false);
+                }
             });
         }
 
@@ -58,15 +68,6 @@ using MarketSDK;
         public MarketType GetLoggedInType()
         {
             return loggedInType;
-        }
-
-        /// <summary>
-        /// 초기화 여부와 유니티 social 함수를 이용해 마켓 로그인 여부를 반환
-        /// </summary>
-        /// <returns>마켓 로그인 여부</returns>
-        public bool CheckSocialLoggedIn()
-        {
-            return login != null && CanUseSocial();
         }
 
         /// <summary>
@@ -94,6 +95,14 @@ using MarketSDK;
             }
         }
 
+        /// <summary>
+        /// 초기화 여부와 유니티 social 함수를 이용해 마켓 로그인 여부를 반환
+        /// </summary>
+        /// <returns>마켓 로그인 여부</returns>
+        public bool CheckSocialLoggedIn()
+        {
+            return login != null;
+        }
 
         /// <summary>
         /// 로그인 진행 후 결과 전달
@@ -172,16 +181,6 @@ using MarketSDK;
             else leaderboardCallback?.Invoke(true);
         }
 
-        /// <summary>
-        /// 소셜 기능 사용 가능한지 반환
-        /// </summary>
-        private bool CanUseSocial()
-        {
-            return Social.localUser.authenticated;
-        }
-
 
         #endregion
-
-    
 }

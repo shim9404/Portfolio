@@ -1,5 +1,4 @@
 ﻿using System;
-using UnityEngine;
 
 #if UNITY_ANDROID
 using GooglePlayGames;
@@ -8,21 +7,26 @@ using GooglePlayGames.BasicApi;
 
 namespace MarketSDK
 {
+    // GPGS V2 대응 업데이트(v2.1.0)
     public class GPGSSocial : IMarketSDKSocial
     {
+
+        public void Init()
+        {
+        }
 
         public void ReportScore(int _value, string _id, Action<bool> _callback = null)
         {
 #if UNITY_ANDROID
-            PlayGamesPlatform.Instance.ReportScore(value, id, (isSuccess) =>
+            PlayGamesPlatform.Instance.ReportScore(_value, _id, (isSuccess) =>
             {
                 if (isSuccess)
                 {
-                    callback?.Invoke(true);
+                    _callback?.Invoke(true);
                 }
                 else
                 {
-                    callback?.Invoke(false);
+                    _callback?.Invoke(false);
                 }
             });
 #endif
@@ -31,10 +35,10 @@ namespace MarketSDK
         public void ShowLeaderboard(string _id = null, Action<bool> _callback = null)
         {
 #if UNITY_ANDROID
-            if (_id == null)
+            if (string.IsNullOrEmpty(_id))
             {
                 PlayGamesPlatform.Instance.ShowLeaderboardUI();
-                _callback.Invoke(true);
+                _callback?.Invoke(true);
             }
             else PlayGamesPlatform.Instance.ShowLeaderboardUI(_id, staus => CheckLeaderboardUIStatus(staus, _callback));
 #endif

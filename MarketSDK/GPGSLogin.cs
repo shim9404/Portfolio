@@ -4,10 +4,12 @@ using UnityEngine;
 #if UNITY_ANDROID
 using GooglePlayGames;
 using GooglePlayGames.BasicApi;
+
 #endif
 
 namespace MarketSDK
 {
+    // GPGS V2 대응 업데이트(v2.1.0)
     public class GPGSLogin : MonoBehaviour, IMarketSDKLogin
     {
         public void Init(Action<bool> _callback)
@@ -15,15 +17,7 @@ namespace MarketSDK
 #if UNITY_ANDROID
             try
             {
-                // GPGS 플러그인 설정
-                PlayGamesClientConfiguration config = new PlayGamesClientConfiguration
-                    .Builder()
-                    .EnableSavedGames()
-                    .Build();
-
-                // 초기화
-                PlayGamesPlatform.InitializeInstance(config);
-                PlayGamesPlatform.DebugLogEnabled = true; // 디버그 로그를 보고 싶지 않다면 false로 변경
+                PlayGamesPlatform.DebugLogEnabled = false;
                 PlayGamesPlatform.Activate();
                 _callback?.Invoke(true);
             }
@@ -35,58 +29,55 @@ namespace MarketSDK
             }
 #endif
         }
+#if UNITY_ANDROID
+        internal void ProcessAuthentication(SignInStatus status, Action<bool, string> _callback) 
+        {
+            if (status == SignInStatus.Success) 
+            {
+                _callback?.Invoke(true, "");
+            } 
+            else 
+            {   
+                // 로그인 실패 시 수동 로그인 호출
+                PlayGamesPlatform.Instance.ManuallyAuthenticate((SignInStatus _status) =>  
+                {
+                    _callback?.Invoke(_status == SignInStatus.Success, "");
+                });
+            }
+        }
+#endif
 
         #region  로그인
 
-
-        public void QuickLogin(Action<bool> _callback, string _id = "")
+    
+        /// <summary>
+        /// 호출 전 Init 필수
+        /// </summary>
+        public void Login(Action<bool, string> _callback)
         {
 #if UNITY_ANDROID
-            // 로그인 허용 UI가 뜨지 않게 옵션 설정
-            PlayGamesPlatform.Instance.Authenticate(SignInInteractivity.NoPrompt, (result) =>
+            PlayGamesPlatform.Instance.Authenticate((SignInStatus status) =>  
             {
-                if (result == SignInStatus.Success)
-                {
-                    _callback.Invoke(true);
-                }
-                else
-                {
-                    switch (result)
-                    {
-                        case SignInStatus.UiSignInRequired: // 클라이언트가 서비스에 연결을 시도했지만 사용자가 로그인되어 있지 않습니다.
-                    case SignInStatus.DeveloperError:   // 	응용 프로그램이 잘못 구성되었습니다.
-                    case SignInStatus.NetworkError:     // 네트워크 오류가 발생했습니다.
-                    case SignInStatus.InternalError:     //	내부 오류가 발생했습니다.
-                    case SignInStatus.Canceled:          // 사용자 취소
-                    case SignInStatus.AlreadyInProgress: // 로그인 진행 중
-                    case SignInStatus.Failed:            // 현재 계정으로 로그인 시도에 실패했습니다.
-                    case SignInStatus.NotAuthenticated:
-                            break;
-                        default:
-                            break;
-                    }
-                    _callback.Invoke(false);
-                }
+                ProcessAuthentication(status, _callback);
             });
 #endif
         }
 
-
-        public void Login(Action<bool, string> _callback)
-        {
-#if UNITY_ANDROID
-            PlayGamesPlatform.Instance.Authenticate(_callback, false);
-#endif
-        }
-
         public void Logout(Action<bool> _callback)
-        {
+        {  
+            // GPGS 로그아웃 미 지원
 #if UNITY_ANDROID
-            PlayGamesPlatform.Instance.SignOut();
+            
             _callback?.Invoke(true);
 #endif
         }
 
+        [Obsolete("GPGS V2 대응으로 미 사용")]
+        public void QuickLogin(Action<bool> _callback, string _id = "")
+        {
+            _callback?.Invoke(false);
+        }
+        
         #endregion
 
     }
